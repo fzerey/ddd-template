@@ -1,0 +1,47 @@
+@baseUrl = http://localhost:5066/api
+
+### Create item
+POST {{baseUrl}}/item
+Content-Type: application/json
+
+{
+  "name": "Pen",
+  "price": 12.5
+}
+
+### List items
+GET {{baseUrl}}/item?pageIndex=1&pageSize=10
+
+### Get item
+GET {{baseUrl}}/item/1
+
+### Update item
+PUT {{baseUrl}}/item/1
+Content-Type: application/json
+
+{
+  "name": "Pencil",
+  "price": 10
+}
+
+### Create order
+POST {{baseUrl}}/order
+Content-Type: application/json
+
+{
+  "customerName": "Alice"
+}
+
+### Add item to order
+POST {{baseUrl}}/order/1/items/1
+Content-Type: application/json
+
+{
+  "quantity": 2
+}
+
+### List orders
+GET {{baseUrl}}/order?pageIndex=1&pageSize=10
+
+### Get order
+GET {{baseUrl}}/order/1
