@@ -12,6 +12,7 @@ This repository provides a Domain-Driven Design (DDD) template implemented in .N
 | `Fzerey.DDDStarter.WebApi` | Controllers, request validation, error handling, startup | Application, Infrastructure |
 | `Fzerey.DDDStarter.Tests` | Domain and handler tests (xUnit, no database needed) | Application |
 | `Fzerey.DDDStarter.ArchitectureTests` | Layer dependency and convention rules (ArchUnitNET) | All layers |
+| `Fzerey.DDDStarter.IntegrationTests` | HTTP endpoints against a real PostgreSQL in Docker (Testcontainers) | WebApi |
 
 Writes and reads take different paths:
 
@@ -55,6 +56,13 @@ dotnet test --solution Fzerey.DDDStarter.sln
 ```
 
 `global.json` switches `dotnet test` to Microsoft.Testing.Platform, which the .NET 10 SDK requires for xUnit v3.
+
+The integration tests start a PostgreSQL container through Testcontainers, so Docker must be running. They do not use the database from `compose.yaml`. To run only the tests that need no Docker:
+
+```sh
+dotnet test --project Fzerey.DDDStarter.Tests
+dotnet test --project Fzerey.DDDStarter.ArchitectureTests
+```
 
 The architecture tests fail the build when:
 
