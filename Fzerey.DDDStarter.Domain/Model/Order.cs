@@ -11,7 +11,7 @@ namespace Fzerey.DDDStarter.Domain.Model
         public string CustomerName { get; private set; } = null!;
         public IReadOnlyCollection<OrderItem> OrderItems => _orderItems.AsReadOnly();
 
-        public decimal TotalAmount => _orderItems.Sum(i => i.Item.Price * i.Quantity);
+        public decimal TotalAmount => _orderItems.Sum(i => i.LineTotal);
 
         public Order(string customerName)
         {
@@ -28,7 +28,7 @@ namespace Fzerey.DDDStarter.Domain.Model
         {
             ArgumentNullException.ThrowIfNull(item);
 
-            var existing = _orderItems.FirstOrDefault(i => ReferenceEquals(i.Item, item) || (item.Id != 0 && i.ItemId == item.Id));
+            var existing = _orderItems.FirstOrDefault(i => i.IsFor(item));
             if (existing is not null)
             {
                 existing.IncreaseQuantity(quantity);

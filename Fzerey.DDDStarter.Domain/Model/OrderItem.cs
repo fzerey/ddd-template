@@ -7,6 +7,8 @@ namespace Fzerey.DDDStarter.Domain.Model
         public int OrderId { get; private set; }
         public int ItemId { get; private set; }
         public int Quantity { get; private set; }
+        public decimal UnitPrice { get; private set; }
+        public decimal LineTotal => UnitPrice * Quantity;
         public Item Item { get; private set; } = null!;
         public Order Order { get; private set; } = null!;
 
@@ -15,10 +17,17 @@ namespace Fzerey.DDDStarter.Domain.Model
             EnsurePositive(quantity);
             Item = item;
             ItemId = item.Id;
+            UnitPrice = item.Price;
             Quantity = quantity;
         }
 
         private OrderItem() { }
+
+        internal bool IsFor(Item item)
+        {
+            var sameItem = ReferenceEquals(Item, item) || (item.Id != 0 && ItemId == item.Id);
+            return sameItem && UnitPrice == item.Price;
+        }
 
         internal void IncreaseQuantity(int quantity)
         {

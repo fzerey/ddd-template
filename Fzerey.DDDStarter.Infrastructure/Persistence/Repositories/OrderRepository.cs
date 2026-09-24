@@ -11,7 +11,6 @@ namespace Fzerey.DDDStarter.Infrastructure.Persistence.Repositories
         {
             return dbContext.Orders
                 .Include(o => o.OrderItems)
-                .ThenInclude(oi => oi.Item)
                 .FirstOrDefaultAsync(o => o.Id == id, cancellationToken);
         }
 

@@ -17,11 +17,11 @@ namespace Fzerey.DDDStarter.Infrastructure.Persistence.Queries
                 {
                     Id = o.Id,
                     CustomerName = o.CustomerName,
-                    TotalAmount = o.OrderItems.Sum(oi => oi.Quantity * oi.Item.Price),
+                    TotalAmount = o.OrderItems.Sum(oi => oi.Quantity * oi.UnitPrice),
                     OrderItems = o.OrderItems.Select(oi => new OrderItemListResponse
                     {
                         Name = oi.Item.Name,
-                        Price = oi.Item.Price,
+                        Price = oi.UnitPrice,
                         Quantity = oi.Quantity
                     }).ToList()
                 })
@@ -37,7 +37,7 @@ namespace Fzerey.DDDStarter.Infrastructure.Persistence.Queries
                 {
                     Id = o.Id,
                     CustomerName = o.CustomerName,
-                    TotalAmount = o.OrderItems.Sum(oi => oi.Quantity * oi.Item.Price)
+                    TotalAmount = o.OrderItems.Sum(oi => oi.Quantity * oi.UnitPrice)
                 })
                 .ToPagedResultAsync(request, cancellationToken);
         }

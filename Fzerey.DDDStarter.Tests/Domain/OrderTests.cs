@@ -80,5 +80,32 @@ namespace Fzerey.DDDStarter.Tests.Domain
 
             Assert.Equal(30m, order.TotalAmount);
         }
+
+        [Fact]
+        public void AddItem_captures_unit_price_at_order_time()
+        {
+            var order = new Order("Alice");
+            var item = new Item("Pen", 10m).WithId(1);
+
+            order.AddItem(item, 2);
+            item.Update("Pen", 15m);
+
+            Assert.Equal(10m, Assert.Single(order.OrderItems).UnitPrice);
+            Assert.Equal(20m, order.TotalAmount);
+        }
+
+        [Fact]
+        public void AddItem_after_price_change_adds_separate_line()
+        {
+            var order = new Order("Alice");
+            var item = new Item("Pen", 10m).WithId(1);
+
+            order.AddItem(item, 2);
+            item.Update("Pen", 15m);
+            order.AddItem(item, 1);
+
+            Assert.Equal(2, order.OrderItems.Count);
+            Assert.Equal(35m, order.TotalAmount);
+        }
     }
 }

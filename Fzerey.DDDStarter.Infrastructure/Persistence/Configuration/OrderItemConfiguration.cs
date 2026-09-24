@@ -11,6 +11,8 @@ namespace Fzerey.DDDStarter.Infrastructure.Persistence.Configuration
             builder.ToTable("OrderItem");
             builder.HasKey(o => o.Id);
             builder.Property(o => o.Quantity).IsRequired();
+            builder.Property(o => o.UnitPrice).IsRequired();
+            builder.Ignore(o => o.LineTotal);
             builder.Property(o => o.ItemId).IsRequired();
             builder.Property(o => o.OrderId).IsRequired();
             builder.HasOne(o => o.Item).WithMany().HasForeignKey(o => o.ItemId);
