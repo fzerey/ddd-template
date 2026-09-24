@@ -73,7 +73,12 @@ jobs:
           mkdir -p test-results
           dotnet ${{ matrix.project }}/bin/Release/net10.0/${{ matrix.project }}.dll \
             -result-markdown "$GITHUB_STEP_SUMMARY" \
-            -result-html test-results/${{ matrix.project }}.html
+            -result-html test-results/${{ matrix.project }}.html \
+            -result-ctrf test-results/${{ matrix.project }}.ctrf.json
+
+      - name: Add test list to summary
+        if: ${{ !cancelled() }}
+        run: bash .github/scripts/test-summary.sh test-results/${{ matrix.project }}.ctrf.json >> "$GITHUB_STEP_SUMMARY"
 
       - name: Upload test report
         if: ${{ !cancelled() }}
