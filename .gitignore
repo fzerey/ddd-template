@@ -459,5 +459,4 @@ $RECYCLE.BIN/
 appsettings.development.json
 
 #for local development
-global.json
 .config/
