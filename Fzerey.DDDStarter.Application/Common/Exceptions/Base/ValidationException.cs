@@ -1,4 +1,3 @@
-using System;
 
 namespace Fzerey.DDDStarter.Application.Common.Exceptions.Base
 {

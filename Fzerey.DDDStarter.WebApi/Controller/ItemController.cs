@@ -11,12 +11,8 @@ namespace Fzerey.DDDStarter.WebApi.Controller
     public class ItemController(IApplicationService applicationService) : ControllerBase
     {
         [HttpGet]
-        public async Task<IActionResult> Get([FromQuery] ListItemsRequestModel model)
+        public async Task<IActionResult> Get([FromQuery] ListItemsRequestModel model, CancellationToken cancellationToken)
         {
-            if(!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
             var response = await applicationService.SendRequest(new ListItemsQuery
             {
                 PageIndex = model.PageIndex,
@@ -24,46 +20,38 @@ namespace Fzerey.DDDStarter.WebApi.Controller
                 SearchQuery = model.SearchQuery,
                 SortBy = model.SortBy,
                 SortOrder = model.SortOrder
-            });
+            }, cancellationToken);
             return Ok(response);
         }
 
-        [HttpGet("{id}")]
-        public async Task<IActionResult> Get(int id)
+        [HttpGet("{id:int}")]
+        public async Task<IActionResult> Get(int id, CancellationToken cancellationToken)
         {
-            var response = await applicationService.SendRequest(new GetItemDetailQuery { Id = id });
+            var response = await applicationService.SendRequest(new GetItemDetailQuery { Id = id }, cancellationToken);
             return Ok(response);
         }
 
         [HttpPost]
-        public async Task<IActionResult> Post([FromBody] CreateItemRequestModel model)
+        public async Task<IActionResult> Post([FromBody] CreateItemRequestModel model, CancellationToken cancellationToken)
         {
-            if(!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-            await applicationService.SendRequest(new CreateItemCommand
+            var id = await applicationService.SendRequest(new CreateItemCommand
             {
                 Name = model.Name,
                 Price = model.Price
-            });
-            return Ok();
+            }, cancellationToken);
+            return CreatedAtAction(nameof(Get), new { id }, new { id });
         }
 
-        [HttpPut("{id}")]
-        public async Task<IActionResult> Put([FromBody] UpdateItemRequestModel model, int id)
+        [HttpPut("{id:int}")]
+        public async Task<IActionResult> Put([FromBody] UpdateItemRequestModel model, int id, CancellationToken cancellationToken)
         {
-            if(!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
             await applicationService.SendRequest(new UpdateItemCommand
             {
                 Id = id,
                 Name = model.Name,
                 Price = model.Price
-            });
-            return Ok();
+            }, cancellationToken);
+            return NoContent();
         }
     }
 }

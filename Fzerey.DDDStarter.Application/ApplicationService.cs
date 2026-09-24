@@ -4,19 +4,19 @@ namespace Fzerey.DDDStarter.Application
 {
     public class ApplicationService(IMediator mediator) : IApplicationService
     {
-        public async Task SendNotification(INotification notification)
+        public Task SendNotification(INotification notification, CancellationToken cancellationToken = default)
         {
-            await mediator.Publish(notification);
+            return mediator.Publish(notification, cancellationToken);
         }
 
-        public async Task<T> SendRequest<T>(IRequest<T> request)
+        public Task<T> SendRequest<T>(IRequest<T> request, CancellationToken cancellationToken = default)
         {
-            return await mediator.Send(request);
+            return mediator.Send(request, cancellationToken);
         }
 
-        public async Task SendRequest(IRequest request)
+        public Task SendRequest(IRequest request, CancellationToken cancellationToken = default)
         {
-            await mediator.Send(request);
+            return mediator.Send(request, cancellationToken);
         }
     }
 }

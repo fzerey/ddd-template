@@ -1,5 +1,5 @@
-using Fzerey.DDDStarter.Application.Common.Exceptions.Orders;
-using Fzerey.DDDStarter.Infrastructure.Context;
+using Fzerey.DDDStarter.Application.Common.Exceptions.OrderItems;
+using Fzerey.DDDStarter.Domain.Repositories;
 using MediatR;
 
 namespace Fzerey.DDDStarter.Application.Items.Commands
@@ -11,7 +11,7 @@ namespace Fzerey.DDDStarter.Application.Items.Commands
         public decimal Price { get; set; }
     }
 
-    public class UpdateItemCommandHandler(ApplicationDbContext dbContext)
+    public class UpdateItemCommandHandler(IItemRepository itemRepository, IUnitOfWork unitOfWork)
         : IRequestHandler<UpdateItemCommand>
     {
         public async Task Handle(
@@ -20,12 +20,10 @@ namespace Fzerey.DDDStarter.Application.Items.Commands
         )
         {
             var item =
-                await dbContext.Items.FindAsync(request.Id)
-                ?? throw new OrderNotFoundException();
-            item.Name = request.Name!;
-            item.Price = request.Price;
-            dbContext.Update(item);
-            await dbContext.SaveChangesAsync(cancellationToken);
+                await itemRepository.GetByIdAsync(request.Id, cancellationToken)
+                ?? throw new ItemNotFoundException();
+            item.Update(request.Name!, request.Price);
+            await unitOfWork.SaveChangesAsync(cancellationToken);
         }
     }
 }

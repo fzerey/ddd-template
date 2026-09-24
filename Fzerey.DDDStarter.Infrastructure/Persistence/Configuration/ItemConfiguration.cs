@@ -10,7 +10,7 @@ namespace Fzerey.DDDStarter.Infrastructure.Persistence.Configuration
         {
             builder.ToTable("Item");
             builder.HasKey(o => o.Id);
-            builder.Property(o => o.Name).HasMaxLength(100).IsRequired();
+            builder.Property(o => o.Name).HasMaxLength(Item.NameMaxLength).IsRequired();
             builder.Property(o => o.Price).IsRequired();
 
         }

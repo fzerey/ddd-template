@@ -1,4 +1,6 @@
-namespace Fzerey.DDDStarter.WebApi.Models.Exception
+using Microsoft.Extensions.Primitives;
+
+namespace Fzerey.DDDStarter.WebApi.Middlewares
 {
     public class CorrelationIdMiddleware
     {
@@ -12,10 +14,14 @@ namespace Fzerey.DDDStarter.WebApi.Models.Exception
 
         public async Task Invoke(HttpContext context)
         {
-            var correlationId = Guid.NewGuid();
+            var correlationId = context.Request.Headers[CorrelationHeaderKey];
+            if (StringValues.IsNullOrEmpty(correlationId))
+            {
+                correlationId = Guid.NewGuid().ToString();
+                context.Request.Headers[CorrelationHeaderKey] = correlationId;
+            }
 
-            context.Request?.Headers.Add(CorrelationHeaderKey, correlationId.ToString());
-            context.Response?.Headers.Add(CorrelationHeaderKey, correlationId.ToString());
+            context.Response.Headers[CorrelationHeaderKey] = correlationId;
             await _next.Invoke(context);
         }
     }

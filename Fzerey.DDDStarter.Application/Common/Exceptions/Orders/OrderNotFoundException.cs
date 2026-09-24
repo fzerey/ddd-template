@@ -1,4 +1,3 @@
-using System;
 using Fzerey.DDDStarter.Application.Common.Exceptions.Base;
 using Fzerey.DDDStarter.Application.Common.Exceptions.Constants;
 

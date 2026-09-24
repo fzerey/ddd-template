@@ -11,12 +11,8 @@ namespace Fzerey.DDDStarter.WebApi.Controller
     public class OrderController(IApplicationService applicationService) : ControllerBase
     {
         [HttpGet]
-        public async Task<IActionResult> Get([FromQuery] ListOrdersRequestModel model)
+        public async Task<IActionResult> Get([FromQuery] ListOrdersRequestModel model, CancellationToken cancellationToken)
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
             var request = new ListOrdersQuery
             {
                 PageIndex = model.PageIndex,
@@ -25,40 +21,32 @@ namespace Fzerey.DDDStarter.WebApi.Controller
                 SortBy = model.SortBy,
                 SortOrder = model.SortOrder
             };
-            var response = await applicationService.SendRequest(request);
+            var response = await applicationService.SendRequest(request, cancellationToken);
             return Ok(response);
         }
 
-        [HttpGet("{id}")]
-        public async Task<IActionResult> Get(int id)
+        [HttpGet("{id:int}")]
+        public async Task<IActionResult> Get(int id, CancellationToken cancellationToken)
         {
             var request = new GetOrderDetailQuery { OrderId = id };
-            var response = await applicationService.SendRequest(request);
+            var response = await applicationService.SendRequest(request, cancellationToken);
             return Ok(response);
         }
 
         [HttpPost]
-        public async Task<IActionResult> Post([FromBody] CreateOrderRequestModel model)
+        public async Task<IActionResult> Post([FromBody] CreateOrderRequestModel model, CancellationToken cancellationToken)
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-            var request = new CreateOrderCommand { CustomerName = model.CustomerName, };
-            await applicationService.SendRequest(request);
-            return Ok();
+            var request = new CreateOrderCommand { CustomerName = model.CustomerName };
+            var id = await applicationService.SendRequest(request, cancellationToken);
+            return CreatedAtAction(nameof(Get), new { id }, new { id });
         }
 
-        [HttpPost("{id}/items/{itemId}")]
-        public async Task<IActionResult> AddItem(int id, int itemId, [FromBody] AddItemToOrderRequestModel model)
+        [HttpPost("{id:int}/items/{itemId:int}")]
+        public async Task<IActionResult> AddItem(int id, int itemId, [FromBody] AddItemToOrderRequestModel model, CancellationToken cancellationToken)
         {
-            if(!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
             var request = new AddItemToOrderCommand { OrderId = id, ItemId = itemId, Quantity = model.Quantity };
-            await applicationService.SendRequest(request);
-            return Ok();
+            await applicationService.SendRequest(request, cancellationToken);
+            return NoContent();
         }
     }
 }

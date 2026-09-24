@@ -1,6 +1,4 @@
 using Microsoft.Extensions.DependencyInjection;
-using Fzerey.DDDStarter.Infrastructure;
-using Microsoft.Extensions.Configuration;
 
 
 namespace Fzerey.DDDStarter.Application{

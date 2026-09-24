@@ -1,4 +1,5 @@
 using Fzerey.DDDStarter.Application.Common.Exceptions.Base;
+using Fzerey.DDDStarter.Domain.Exceptions;
 using Fzerey.DDDStarter.WebApi.Models.Exception;
 using Serilog.Context;
 using System.Net;
@@ -24,6 +25,11 @@ namespace Fzerey.DDDStarter.WebApi.Middlewares
             }
             catch (Exception error)
             {
+                if (context.Response.HasStarted)
+                {
+                    _logger.LogError(error, "Unhandled exception after the response started");
+                    throw;
+                }
                 await HandleExceptionAsync(context, error);
             }
         }
@@ -34,32 +40,36 @@ namespace Fzerey.DDDStarter.WebApi.Middlewares
             response.ContentType = "application/json";
 
             var errorModel = new ErrorModel();
-            switch (error.GetType().BaseType.Name)
+            switch (error)
             {
-                case "ValidationException":
-                    var validationException = (ValidationException)error;
+                case ValidationException validationException:
                     errorModel.Message = validationException.Message;
                     errorModel.ErrorCode = validationException.Code;
                     response.StatusCode = (int)HttpStatusCode.BadRequest;
                     break;
 
-                case "NotFoundException":
-                    var notFoundException = (NotFoundException)error;
+                case DomainException domainException:
+                    errorModel.Message = domainException.Message;
+                    errorModel.ErrorCode = domainException.Code;
+                    response.StatusCode = (int)HttpStatusCode.BadRequest;
+                    break;
+
+                case NotFoundException notFoundException:
                     errorModel.Message = notFoundException.Message;
                     errorModel.ErrorCode = notFoundException.Code;
-                    response.StatusCode = (int)HttpStatusCode.UnprocessableEntity; // 404 does not work due to AWS CloudFront
+                    response.StatusCode = (int)HttpStatusCode.NotFound;
                     break;
 
                 default:
-                    // unhandled error
                     response.StatusCode = (int)HttpStatusCode.InternalServerError;
                     errorModel.Message = "Unexpected exception";
                     break;
             }
 
-            using (LogContext.PushProperty("CorrelationId", response.Headers[CorrelationIdMiddleware.CorrelationHeaderKey]))
+            var correlationId = context.Request.Headers[CorrelationIdMiddleware.CorrelationHeaderKey].ToString();
+            using (LogContext.PushProperty("CorrelationId", correlationId))
             {
-                _logger.LogError(error, $"Message: {errorModel.Message} CorrelationId: {response.Headers[CorrelationIdMiddleware.CorrelationHeaderKey]}");
+                _logger.LogError(error, "Message: {Message} CorrelationId: {CorrelationId}", errorModel.Message, correlationId);
             }
             await response.WriteAsync(errorModel.ToString());
         }

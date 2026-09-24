@@ -1,6 +1,6 @@
 using Fzerey.DDDStarter.Application.Common.Exceptions.OrderItems;
 using Fzerey.DDDStarter.Application.Common.Exceptions.Orders;
-using Fzerey.DDDStarter.Infrastructure.Context;
+using Fzerey.DDDStarter.Domain.Repositories;
 using MediatR;
 
 namespace Fzerey.DDDStarter.Application.Orders.Commands
@@ -12,16 +12,18 @@ namespace Fzerey.DDDStarter.Application.Orders.Commands
         public int Quantity { get; set; }
     }
 
-    public class AddItemToOrderCommandHandler(ApplicationDbContext dbContext) : IRequestHandler<AddItemToOrderCommand>
+    public class AddItemToOrderCommandHandler(
+        IOrderRepository orderRepository,
+        IItemRepository itemRepository,
+        IUnitOfWork unitOfWork
+    ) : IRequestHandler<AddItemToOrderCommand>
     {
         public async Task Handle(AddItemToOrderCommand request, CancellationToken cancellationToken)
         {
-            var order = await dbContext.Orders.FindAsync(request.OrderId) ?? throw new OrderNotFoundException();
-            var item = await dbContext.Items.FindAsync(request.ItemId) ?? throw new ItemNotFoundException();
+            var order = await orderRepository.GetByIdAsync(request.OrderId, cancellationToken) ?? throw new OrderNotFoundException();
+            var item = await itemRepository.GetByIdAsync(request.ItemId, cancellationToken) ?? throw new ItemNotFoundException();
             order.AddItem(item, request.Quantity);
-            dbContext.Update(order);
-            await dbContext.SaveChangesAsync(cancellationToken);
+            await unitOfWork.SaveChangesAsync(cancellationToken);
         }
     }
 }
-

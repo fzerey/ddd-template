@@ -1,35 +1,23 @@
-using System.Collections.Generic;
-using Microsoft.EntityFrameworkCore;
-
 namespace Fzerey.DDDStarter.Application.Common.Pagination
 {
     public class PagedResult<T>
     {
-        public List<T>? Items { get; set; }
-        public int TotalCount { get; set; }
-        public int TotalPages { get; set; }
-        public int PageIndex { get; set; }
-        public int PageSize { get; set; }
+        public List<T> Items { get; init; } = [];
+        public int TotalCount { get; init; }
+        public int TotalPages { get; init; }
+        public int PageIndex { get; init; }
+        public int PageSize { get; init; }
 
-        public async Task ToPagedList(IQueryable<T> source, int pageIndex, int pageSize)
+        public static PagedResult<T> Create(List<T> items, int totalCount, int pageIndex, int pageSize)
         {
-            var count = await source.CountAsync();
-            var items = await source.Skip((pageIndex - 1) * pageSize).Take(pageSize).ToListAsync();
-            Items = items;
-            TotalCount = count;
-            TotalPages = (int)Math.Ceiling(count / (double)pageSize);
-            PageIndex = pageIndex;
-            PageSize = pageSize;
-        }
-        public async Task ToPagedList(IEnumerable<T> source, int pageIndex, int pageSize)
-        {
-            var count = source.Count();
-            var items = source.Skip((pageIndex - 1) * pageSize).Take(pageSize).ToList();
-            Items = items;
-            TotalCount = count;
-            TotalPages = (int)Math.Ceiling(count / (double)pageSize);
-            PageIndex = pageIndex;
-            PageSize = pageSize;
+            return new PagedResult<T>
+            {
+                Items = items,
+                TotalCount = totalCount,
+                TotalPages = (int)Math.Ceiling(totalCount / (double)pageSize),
+                PageIndex = pageIndex,
+                PageSize = pageSize
+            };
         }
     }
 }
