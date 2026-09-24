@@ -11,6 +11,7 @@ This repository provides a Domain-Driven Design (DDD) template implemented in .N
 | `Fzerey.DDDStarter.Infrastructure` | EF Core `DbContext`, repositories, query services, migrations (PostgreSQL) | Domain, Application |
 | `Fzerey.DDDStarter.WebApi` | Controllers, request validation, error handling, startup | Application, Infrastructure |
 | `Fzerey.DDDStarter.Tests` | Domain and handler tests (xUnit, no database needed) | Application |
+| `Fzerey.DDDStarter.ArchitectureTests` | Layer dependency and convention rules (ArchUnitNET) | All layers |
 
 Writes and reads take different paths:
 
@@ -54,6 +55,15 @@ dotnet test --solution Fzerey.DDDStarter.sln
 ```
 
 `global.json` switches `dotnet test` to Microsoft.Testing.Platform, which the .NET 10 SDK requires for xUnit v3.
+
+The architecture tests fail the build when:
+
+- Domain depends on another layer, EF Core, MediatR or ASP.NET Core
+- Application depends on Infrastructure, WebApi or EF Core
+- Infrastructure depends on WebApi
+- A controller uses Infrastructure or a repository directly instead of going through the Application layer
+- An entity has a public setter or lacks a non-public parameterless constructor for EF Core
+- A request has no handler, or a handler is not named `<Request>Handler`
 
 ## Migrations
 

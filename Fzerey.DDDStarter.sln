@@ -13,6 +13,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fzerey.DDDStarter.WebApi", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fzerey.DDDStarter.Tests", "Fzerey.DDDStarter.Tests\Fzerey.DDDStarter.Tests.csproj", "{CE7CC168-2EB6-4EB2-9EE0-692297E95CF7}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fzerey.DDDStarter.ArchitectureTests", "Fzerey.DDDStarter.ArchitectureTests\Fzerey.DDDStarter.ArchitectureTests.csproj", "{30F7F9C1-D2A3-4284-A218-5EA352A9D587}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -83,6 +85,18 @@ Global
 		{CE7CC168-2EB6-4EB2-9EE0-692297E95CF7}.Release|x64.Build.0 = Release|Any CPU
 		{CE7CC168-2EB6-4EB2-9EE0-692297E95CF7}.Release|x86.ActiveCfg = Release|Any CPU
 		{CE7CC168-2EB6-4EB2-9EE0-692297E95CF7}.Release|x86.Build.0 = Release|Any CPU
+		{30F7F9C1-D2A3-4284-A218-5EA352A9D587}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{30F7F9C1-D2A3-4284-A218-5EA352A9D587}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{30F7F9C1-D2A3-4284-A218-5EA352A9D587}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{30F7F9C1-D2A3-4284-A218-5EA352A9D587}.Debug|x64.Build.0 = Debug|Any CPU
+		{30F7F9C1-D2A3-4284-A218-5EA352A9D587}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{30F7F9C1-D2A3-4284-A218-5EA352A9D587}.Debug|x86.Build.0 = Debug|Any CPU
+		{30F7F9C1-D2A3-4284-A218-5EA352A9D587}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{30F7F9C1-D2A3-4284-A218-5EA352A9D587}.Release|Any CPU.Build.0 = Release|Any CPU
+		{30F7F9C1-D2A3-4284-A218-5EA352A9D587}.Release|x64.ActiveCfg = Release|Any CPU
+		{30F7F9C1-D2A3-4284-A218-5EA352A9D587}.Release|x64.Build.0 = Release|Any CPU
+		{30F7F9C1-D2A3-4284-A218-5EA352A9D587}.Release|x86.ActiveCfg = Release|Any CPU
+		{30F7F9C1-D2A3-4284-A218-5EA352A9D587}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

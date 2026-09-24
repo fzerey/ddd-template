@@ -1,0 +1,28 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <OutputType>Exe</OutputType>
+    <IsPackable>false</IsPackable>
+    <RootNamespace>Fzerey.DDDStarter.ArchitectureTests</RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="18.10.1"/>
+    <PackageReference Include="xunit.v3" Version="4.0.1"/>
+    <PackageReference Include="xunit.runner.visualstudio" Version="4.0.0">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="TngTech.ArchUnitNET.xUnitV3" Version="0.13.4"/>
+  </ItemGroup>
+  <ItemGroup>
+    <Using Include="Xunit"/>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Fzerey.DDDStarter.Domain\Fzerey.DDDStarter.Domain.csproj"/>
+    <ProjectReference Include="..\Fzerey.DDDStarter.Application\Fzerey.DDDStarter.Application.csproj"/>
+    <ProjectReference Include="..\Fzerey.DDDStarter.Infrastructure\Fzerey.DDDStarter.Infrastructure.csproj"/>
+    <ProjectReference Include="..\Fzerey.DDDStarter.WebApi\Fzerey.DDDStarter.WebApi.csproj"/>
+  </ItemGroup>
+</Project>
