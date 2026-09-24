@@ -7,6 +7,7 @@ on:
 
 jobs:
   build:
+    name: Build
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
@@ -21,9 +22,6 @@ jobs:
       - name: Build
         run: dotnet build Fzerey.DDDStarter.sln --no-restore --configuration Release
 
-      - name: Test
-        run: dotnet test --solution Fzerey.DDDStarter.sln --no-build --configuration Release
-
       - name: Check for missing EF Core migrations
         run: |
           dotnet tool install --global dotnet-ef --version 10.0.12
@@ -32,3 +30,43 @@ jobs:
             --startup-project Fzerey.DDDStarter.WebApi \
             --configuration Release \
             --no-build
+
+      - name: Upload test binaries
+        uses: actions/upload-artifact@v7
+        with:
+          name: test-binaries
+          path: |
+            Fzerey.DDDStarter.Tests/bin/Release/net10.0/
+            Fzerey.DDDStarter.ArchitectureTests/bin/Release/net10.0/
+            Fzerey.DDDStarter.IntegrationTests/bin/Release/net10.0/
+          if-no-files-found: error
+          retention-days: 1
+
+  test:
+    name: ${{ matrix.name }}
+    needs: build
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - name: Unit tests
+            project: Fzerey.DDDStarter.Tests
+          - name: Architecture tests
+            project: Fzerey.DDDStarter.ArchitectureTests
+          - name: Integration tests
+            project: Fzerey.DDDStarter.IntegrationTests
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-dotnet@v6
+        with:
+          dotnet-version: 10.0.x
+
+      - name: Download test binaries
+        uses: actions/download-artifact@v8
+        with:
+          name: test-binaries
+
+      - name: Run ${{ matrix.name }}
+        run: dotnet ${{ matrix.project }}/bin/Release/net10.0/${{ matrix.project }}.dll
